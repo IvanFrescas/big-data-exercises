@@ -37,24 +37,21 @@ public class MovieRecommender {
     private int totalProducts = 0;
     private int totalUsers = 0;
 
-    //Hash map para almacenar ids
-    //HashMap<String, Integer> productsMap = new HashMap<String, Integer>();
-    //HashMap<String, Integer> usersMap = new HashMap<String, Integer>();
-
     BiMap<String, Integer> productsMap = HashBiMap.create();
     BiMap<String, Integer> usersMap = HashBiMap.create();
 
+    static final String fieldProduct = "product/productId:";
+    static final String fieldUser = "review/userId";
+    static final String fieldscore = "review/score";
 
     public MovieRecommender(String path) throws  IOException {
 
 
-
-        //Escritura de datos para crear archivo .csv
         File result = new File("Result.csv");
         FileWriter fw = new FileWriter(result);
         BufferedWriter bw = new BufferedWriter(fw);
 
-        // Lectura de datos
+
         String infile = path;
         GZIPInputStream in = new GZIPInputStream(new FileInputStream(infile));
         Reader decoder = new InputStreamReader(in);
@@ -70,8 +67,9 @@ public class MovieRecommender {
         int reviewNum = 0;
 
 
+
         while ((line = br.readLine()) != null) {
-            if (line.startsWith("product/productId:")) {
+            if (line.startsWith(fieldProduct)) {
                 reviewNum++;
 
                 String [] parts = line.split(": ");
@@ -82,7 +80,7 @@ public class MovieRecommender {
                 }
                 cvsProd = productsMap.get(productId).toString();
 
-            } else if (line.startsWith("review/userId")) {
+            } else if (line.startsWith(fieldUser)) {
                 String [] parts = line.split(": ");
                 String userId = parts[1];
 
@@ -92,7 +90,7 @@ public class MovieRecommender {
                 cvsUser = usersMap.get(userId).toString();
 
             } 
-            else if (line.startsWith("review/score")) {
+            else if (line.startsWith(fieldscore)) {
                 String [] parts = line.split(": ");
                 cvsScore = parts[1];
 
